@@ -15,15 +15,15 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"Logged in as {bot.user}")
     print("Bot is running and connected to Discord!")
+
     try:
-        GUILD_ID = 123456789012345678  # 서버 ID 입력
-        guild = discord.Object(id=GUILD_ID)
-        bot.tree.add_command(hello)  # 여기 추가
-        synced = await bot.tree.sync(guild=guild)  
-        print(f"Synced {len(synced)} command(s) in {GUILD_ID}")
+        bot.tree.clear_commands()  # 👈 기존 명령어 싹 지우고
+        bot.tree.add_command(hello)  # 👈 다시 추가한 뒤
+        synced = await bot.tree.sync()  # 👈 동기화 강제 실행
+
+        print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(f"Error syncing commands: {e}")
-        
 
 # 슬래시 명령어 추가: /hello
 @app_commands.command(name="hello", description="Says hello to you!")
