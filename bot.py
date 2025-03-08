@@ -6,9 +6,8 @@ import os
 import discord
 import discord.ext
 from discord import app_commands
-from dotenv import load_dotenv
 import requests
-load_dotenv()
+
 
 # discord
 intent = discord.Intents.default()
