@@ -17,7 +17,6 @@ async def on_ready():
     print("Bot is running and connected to Discord!")
 
     try:
-        bot.tree.clear_commands()  # 👈 기존 명령어 싹 지우고
         bot.tree.add_command(hello)  # 👈 다시 추가한 뒤
         synced = await bot.tree.sync()  # 👈 동기화 강제 실행
 
