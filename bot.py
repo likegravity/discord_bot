@@ -16,19 +16,9 @@ client = discord.Client(intents=intent)
 tree = app_commands.CommandTree(client)
 
 # slash command
-@app_commands.command(name="ㄴㄱㅁ", description="ㄴㄱㅁ를 출력")
+@app_commands.command(name="ㄹㅇㅋㅋ", description="ㄹㅇㅋㅋ를 출력")
 async def mother(interaction: discord.Interaction):
-    await interaction.response.send_message("ㄴㄱㅁ")
-
-# load all on message
-extension_dir = 'on_message'
-on_message_functions = []
-for filename in os.listdir(extension_dir):
-    if filename.endswith('.py'):
-        module_name = f'{extension_dir}.{filename[:-3]}'
-        module = importlib.import_module(module_name)
-        if hasattr(module, 'main'):
-            on_message_functions.append(module.main)
+    await interaction.response.send_message("ㄹㅇㅋㅋ")
 
 @client.event
 async def on_message(message):
