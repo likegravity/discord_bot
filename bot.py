@@ -46,7 +46,7 @@ async def on_message(message):
 
 @client.event
 async def on_ready():
-    tree.add_command(random_cat)
+    tree.add_command(mother)
     await tree.sync()
     print("We have logged in as {0.user}".format(client))
     await client.change_presence(activity=discord.Game(name="엄"))
