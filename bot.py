@@ -1,36 +1,69 @@
-import discord
-from discord import app_commands
-import random
+# -*- coding: utf-8 -*-
 
-# 봇 인텐트 설정
-intents = discord.Intents.default()
-client = discord.Client(intents=intents)
+# import
+import importlib
+import os
+import discord
+import discord.ext
+from discord import app_commands
+from dotenv import load_dotenv
+import requests
+load_dotenv()
+
+# discord
+intent = discord.Intents.default()
+intent.emojis = True
+intent.message_content = True
+intent.messages = True
+client = discord.Client(intents=intent)
 tree = app_commands.CommandTree(client)
 
-# 랜덤 응답 메시지 목록
-HELLO_RESPONSES = [
-    "안녕하세요! 반가워요.",
-    "Hello there!",
-    "반갑습니다~",
-    "오늘도 좋은 하루 되세요!",
-    "어서오세요! 무엇을 도와드릴까요?",
-    "안녕! 기분이 어때요?",
-    "방문해주셔서 감사합니다!"
-]
+# slash command
+@app_commands.command(name="야짤", description="Get a random cat image.")
+async def random_cat(interaction: discord.Interaction):
+    r = requests.get("https://api.thecatapi.com/v1/images/search")
+    r = r.json()[0]["url"]
+    await interaction.response.send_message(r)
 
-# 봇이 준비되었을 때 실행되는 이벤트
+# load all on message
+extension_dir = 'on_message'
+on_message_functions = []
+for filename in os.listdir(extension_dir):
+    if filename.endswith('.py'):
+        module_name = f'{extension_dir}.{filename[:-3]}'
+        module = importlib.import_module(module_name)
+        if hasattr(module, 'main'):
+            on_message_functions.append(module.main)
+
+@client.event
+async def on_message(message):
+    global llmUserCooltime, llmIsRunning
+    if message.guild == None:
+        # reject DM
+        return
+    if message.content == None:
+        # reject no message
+        return
+    if message.channel == None:
+        # reject DM
+        return
+    if message.author == client.user:
+        # reject echo
+        return
+    if message.author.bot == True:
+        # reject bot
+        return
+    
+    # 여기다가 채팅 들어온거 처리하셈
+    async with message.channel.trigger_typing():
+        await message.channel.send(f"message.content:{message.content}\nmessage.channel.name:{message.channel.name}\nmessage.author.name:{message.author.name}")
+
+
 @client.event
 async def on_ready():
-    print(f'봇이 {client.user}로 로그인했습니다')
-    await tree.sync()  # 명령어 동기화
-
-# /hello 명령어 정의
-@tree.command(name="hello", description="인사말을 랜덤으로 출력합니다")
-async def hello(interaction: discord.Interaction):
-    # 랜덤한 응답 선택
-    response = random.choice(HELLO_RESPONSES)
-    await interaction.response.send_message(response)
-
-# 봇 실행
-# 아래 YOUR_BOT_TOKEN 부분에 디스코드 봇 토큰을 입력하세요
-client.run(DISCORD_TOKEN)
+    tree.add_command(random_cat)
+    await tree.sync()
+    print("We have logged in as {0.user}".format(client))
+    await client.change_presence(activity=discord.Game(name="엄"))
+    
+client.run(os.getenv("DISCORD_TOKEN"))
