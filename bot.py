@@ -38,10 +38,6 @@ async def on_message(message):
     if message.author.bot == True:
         # reject bot
         return
-    
-    # 여기다가 채팅 들어온거 처리하셈
-    async with message.channel.trigger_typing():
-        await message.channel.send(f"message.content:{message.content}\nmessage.channel.name:{message.channel.name}\nmessage.author.name:{message.author.name}")
 
 
 @client.event
