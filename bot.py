@@ -23,6 +23,7 @@ async def on_ready():
         print(f"Synced {len(synced)} command(s) in {GUILD_ID}")
     except Exception as e:
         print(f"Error syncing commands: {e}")
+        
 
 # 슬래시 명령어 추가: /hello
 @app_commands.command(name="hello", description="Says hello to you!")
