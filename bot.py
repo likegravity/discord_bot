@@ -16,8 +16,11 @@ async def on_ready():
     print(f"Logged in as {bot.user}")
     print("Bot is running and connected to Discord!")
     try:
-        synced = await bot.tree.sync()  # 슬래시 명령어 동기화
-        print(f"Synced {len(synced)} command(s)")
+        GUILD_ID = 123456789012345678  # 서버 ID 입력
+        guild = discord.Object(id=GUILD_ID)
+        bot.tree.add_command(hello)  # 여기 추가
+        synced = await bot.tree.sync(guild=guild)  
+        print(f"Synced {len(synced)} command(s) in {GUILD_ID}")
     except Exception as e:
         print(f"Error syncing commands: {e}")
 
