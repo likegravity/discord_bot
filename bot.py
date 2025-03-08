@@ -6,8 +6,6 @@ import os
 import discord
 import discord.ext
 from discord import app_commands
-import requests
-
 
 # discord
 intent = discord.Intents.default()
@@ -18,11 +16,9 @@ client = discord.Client(intents=intent)
 tree = app_commands.CommandTree(client)
 
 # slash command
-@app_commands.command(name="야짤", description="Get a random cat image.")
-async def random_cat(interaction: discord.Interaction):
-    r = requests.get("https://api.thecatapi.com/v1/images/search")
-    r = r.json()[0]["url"]
-    await interaction.response.send_message(r)
+@app_commands.command(name="ㄴㄱㅁ", description="ㄴㄱㅁ를 출력")
+async def mother(interaction: discord.Interaction):
+    await interaction.response.send_message("ㄴㄱㅁ")
 
 # load all on message
 extension_dir = 'on_message'
