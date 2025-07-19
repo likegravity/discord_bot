@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import os
+from dotenv import load_dotenv
 
 # 키워드 리스트
 KEYWORDS = ["ㄴㄱㅁ", "sra", "SRA", "ㄴㅇㅁ", "니애미", "애미"]
