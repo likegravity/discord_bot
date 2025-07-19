@@ -1,50 +1,36 @@
-# -*- coding: utf-8 -*-
-
-# import
-import importlib
-import os
 import discord
-import discord.ext
-from discord import app_commands
+from discord.ext import commands
+import asyncio
 
-# discord
-intent = discord.Intents.default()
-intent.emojis = True
-intent.message_content = True
-intent.messages = True
-client = discord.Client(intents=intent)
-tree = app_commands.CommandTree(client)
+# 키워드 리스트
+KEYWORDS = ["ㄴㄱㅁ", "sra", "SRA", "ㄴㅇㅁ", "니애미", "애미"]
 
-# slash command
-@app_commands.command(name="ㄹㅇㅋㅋ", description="ㄹㅇㅋㅋ를 출력")
-async def mother(interaction: discord.Interaction):
-    await interaction.response.send_message("ㄹㅇㅋㅋ")
+# 봇 설정
+intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True  # 유저 타임아웃하려면 필요함
 
-@client.event
-async def on_message(message):
-    global llmUserCooltime, llmIsRunning
-    if message.guild == None:
-        # reject DM
-        return
-    if message.content == None:
-        # reject no message
-        return
-    if message.channel == None:
-        # reject DM
-        return
-    if message.author == client.user:
-        # reject echo
-        return
-    if message.author.bot == True:
-        # reject bot
-        return
+bot = commands.Bot(command_prefix="!", intents=intents)
 
-
-@client.event
+@bot.event
 async def on_ready():
-    tree.add_command(mother)
-    await tree.sync()
-    print("We have logged in as {0.user}".format(client))
-    await client.change_presence(activity=discord.Game(name="엄"))
+    print(f"{bot.user} 준비 완료!")
+
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    if any(keyword in message.content.lower() for keyword in KEYWORDS):
+        try:
+            # 60초 타임아웃 (단위는 초)
+            duration = 60
+            await message.author.timeout(discord.utils.utcnow() + discord.timedelta(seconds=duration), reason="금지 키워드 사용")
+
+            await message.channel.send(f"{message.author.mention}새끼가 금지어를 사용해 {duration}초 타임아웃 처리됨.")
+        except Exception as e:
+            print(f"타임아웃 실패: {e}")
+
+    await bot.process_commands(message)
     
-client.run(os.getenv("DISCORD_TOKEN"))
+bot.run(os.getenv("DISCORD_TOKEN"))
